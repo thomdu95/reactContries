@@ -2,6 +2,18 @@
   text-align: center;
 }
 
+.myContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.myCountryList {
+    width: 55vw;
+    margin-top: 5vh;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
