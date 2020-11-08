@@ -1,4 +1,7 @@
 import Card from "react-bootstrap/Card"
+import Button from "react-bootstrap/Button"
+import NumberFormat from "react-number-format"
+
 export default function Country(props) {
     return (
       <Card>
@@ -6,11 +9,33 @@ export default function Country(props) {
         <Card.Body>
           <Card.Title>{props.country.name}</Card.Title>
           <Card.Text>
-            This is a longer card with supporting text below as a natural
-            lead-in to additional content. This content is a little bit longer.
+            <p>
+              This country has{" "}
+              <strong>
+                <NumberFormat
+                  value={props.country.population}
+                  thousandSeparator={"."}
+                  decimalSeparator={","}
+                  displayType="text"
+                />
+                {/* {props.country.population} */}
+              </strong>{" "}
+              peoples living there.
+            </p>
+            <p>
+              It's capital is <strong>{props.country.capital || "Unknown"}</strong> and it's
+              located in <strong>{props.country.region}</strong>
+            </p>
           </Card.Text>
+          <Button
+            variant="outline-secondary"
+            block
+            href={`https://fr.wikipedia.org/wiki/${props.country.translations.fr}`}
+            target="_blank"
+          >
+            Visit
+          </Button>
         </Card.Body>
-        <p>{props.country.name}</p>
       </Card>
     );
 }

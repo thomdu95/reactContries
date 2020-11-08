@@ -11,6 +11,12 @@ function App() {
   const [error, setError] = useState(false);
   const [nbCountries, setNbCountries] = useState(3);
   const [widthOfContainer, setWidthOfContainer] = useState(55);
+  const [alphabeticalAsc, setAlphabeticalAsc] = useState(false);
+  const [alphabeticalDesc, setAlphabeticalDesc] = useState(false);
+  const [populationAsc, setPopulationAsc] = useState(false);
+  const [populationDesc, setPopulationDesc] = useState(false); 
+  const [territoryAsc, setTerritoryAsc] = useState(false);
+  const [territoryDesc, setTerritoryDesc] = useState(false);  
 
   // const [filter, setFilter] = useState("");
 
@@ -41,6 +47,39 @@ function App() {
     setWidthOfContainer(range.target.value)
   }
 
+  function changealphabeticalAsc(sorting) {
+    setAlphabeticalAsc(sorting)
+  }
+
+  function changealphabeticalDesc(sorting) {
+    setAlphabeticalDesc(sorting);
+  }
+
+  function changepopulationAsc(sorting) {
+    console.log(sorting.target.checked)
+    if (sorting.target.checked === true) {
+      setCountriesToDisplay([...countries.sort((a, b) => {
+        return a.population - b.population;
+      })])
+      setPopulationAsc(!sorting.target.checked);
+    } else {
+      setPopulationAsc(sorting.target.checked);
+    }
+
+  }
+
+  function changepopulationDesc(sorting) {
+    setPopulationDesc(sorting);
+  }
+  
+  function changeterritoryAsc(sorting) {
+    setTerritoryAsc(sorting);
+  }
+
+  function changeterritoryDesc(sorting) {
+    setTerritoryDesc(sorting);
+  }
+
   if (error) {
     return <div>Erreur</div>;
   } else if (countries === []) {
@@ -52,10 +91,35 @@ function App() {
   } else {
     return (
       <>
-        <MyNavBar filterChange={filterChange} countries={countries} filterContinent={filterContinentChange} />
+        <MyNavBar
+          filterChange={filterChange}
+          countries={countries}
+          filterContinent={filterContinentChange}
+        />
         <div className="myContainer">
-          <MySettings changeRange={changeRange} nbCountries={nbCountries} changeRangeWidth={changeRangeWidth} widthOfContainer={widthOfContainer}/>
-          <CountryList countries={countriesToDisplay} nbCountries={nbCountries} widthOfContainer={widthOfContainer}/>
+          <MySettings
+            changeRange={changeRange}
+            nbCountries={nbCountries}
+            changeRangeWidth={changeRangeWidth}
+            widthOfContainer={widthOfContainer}
+            changealphabeticalAsc={changealphabeticalAsc}
+            alphabeticalAsc={alphabeticalAsc}
+            changealphabeticalDesc={changealphabeticalDesc}
+            alphabeticalDesc={alphabeticalDesc}
+            changepopulationAsc={changepopulationAsc}
+            populationAsc={populationAsc}
+            changepopulationDesc={changepopulationDesc}
+            populationDesc={populationDesc}
+            changeterritoryAsc={changeterritoryAsc}
+            territoryAsc={territoryAsc}
+            changeterritoryDesc={changeterritoryDesc}
+            territoryDesc={territoryDesc}
+          />
+          <CountryList
+            countries={countriesToDisplay}
+            nbCountries={nbCountries}
+            widthOfContainer={widthOfContainer}
+          />
         </div>
       </>
     );
