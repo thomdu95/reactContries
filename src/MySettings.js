@@ -2,8 +2,22 @@ import Form from "react-bootstrap/Form";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import Col from "react-bootstrap/Col";
+import { useEffect, useState } from "react";
 
 export default function MySettings(props) {
+    const [continents, setContinents] = useState([]);
+    const [subContinents, setSubContinents] = useState([]);
+
+    useEffect(() => {
+    props.countries.forEach((elem) => {
+        if (!continents.includes(elem.region)) {
+        setContinents([...continents, elem.region]);
+        }
+        if (!subContinents.includes(elem.subregion)) {
+            setSubContinents([...subContinents, elem.subregion]);
+        }
+    });
+    });
   return (
     // <Form style={{ width: `${props.widthOfContainer}vw` }}>
     <Form style={{ width: "60vw", marginTop: "2vh" }}>
@@ -57,66 +71,39 @@ export default function MySettings(props) {
         <Col>
           <Form.Group controlId="sortAlpha">
             <Form.Label>Sort Coutries By ...</Form.Label>
-            <Form.Row>
-              <Col>
-                <Form.Check
-                  type="checkbox"
-                  id={`alphabeticalAsc`}
-                  label={`alphabeticalAsc`}
-                  value={props.alphabeticalAsc}
-                  onChange={props.changealphabeticalAsc.bind(this)}
-                />
-              </Col>
-              <Col>
-                <Form.Check
-                  type="checkbox"
-                  id={`alphabeticalDesc`}
-                  label={`alphabeticalDesc`}
-                  value={props.alphabeticalDesc}
-                  onChange={props.changealphabeticalDesc.bind(this)}
-                />
-              </Col>
-            </Form.Row>
-            <Form.Row>
-              <Col>
-                <Form.Check
-                  type="checkbox"
-                  id={`populationAsc`}
-                  label={`populationAsc`}
-                  value={props.populationAsc}
-                  onChange={props.changepopulationAsc.bind(this)}
-                />
-              </Col>
-              <Col>
-                <Form.Check
-                  type="checkbox"
-                  id={`populationDesc`}
-                  label={`populationDesc`}
-                  value={props.populationDesc}
-                  onChange={props.changepopulationDesc.bind(this)}
-                />
-              </Col>
-            </Form.Row>
-            <Form.Row>
-              <Col>
-                <Form.Check
-                  type="checkbox"
-                  id={`territoryAsc`}
-                  label={`territoryAsc`}
-                  value={props.territoryAsc}
-                  onChange={props.changeterritoryAsc.bind(this)}
-                />
-              </Col>
-              <Col>
-                <Form.Check
-                  type="checkbox"
-                  id={`territoryDesc`}
-                  label={`territoryDesc`}
-                  value={props.territoryDesc}
-                  onChange={props.changeterritoryDesc.bind(this)}
-                />
-              </Col>
-            </Form.Row>
+            <Form.Control as="select" onChange={props.changeSelect.bind(this)}>
+              <option>alphabeticalAsc</option>
+              <option>alphabeticalDesc</option>
+              <option>populationAsc</option>
+              <option>populationDesc</option>
+              <option>territoryAsc</option>
+              <option>territoryDesc</option>
+            </Form.Control>
+          </Form.Group>
+          </Col>
+          <Col>
+          <Form.Group controlId="sortRegion">
+            <Form.Label>Or By Region</Form.Label>
+            <Form.Control as="select" onChange={props.changeRegion.bind(this)}>
+              <option>Region</option>
+              {continents.map((elem) => {
+                return <option key={elem}>{elem}</option>;
+              })}
+            </Form.Control>
+          </Form.Group>
+          </Col>
+          <Col>
+          <Form.Group controlId="sortSub">
+            <Form.Label>Or By SubRegion</Form.Label>
+            <Form.Control
+              as="select"
+              onChange={props.changeSubRegion.bind(this)}
+            >
+              <option>SubRegion</option>
+              {subContinents.map((elem) => {
+                return <option key={elem}>{elem}</option>;
+              })}
+            </Form.Control>
           </Form.Group>
         </Col>
       </Form.Row>

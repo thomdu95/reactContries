@@ -8,37 +8,61 @@ import MySettings from "./MySettings";
 function App() {
   const [countries, setCountries] = useState([]);
   const [countriesToDisplay, setCountriesToDisplay] = useState([]);
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   const [nbCountries, setNbCountries] = useState(3);
   const [widthOfContainer, setWidthOfContainer] = useState(55);
-  const [alphabeticalAsc, setAlphabeticalAsc] = useState(false);
-  const [alphabeticalDesc, setAlphabeticalDesc] = useState(false);
-  const [populationAsc, setPopulationAsc] = useState(false);
-  const [populationDesc, setPopulationDesc] = useState(false); 
-  const [territoryAsc, setTerritoryAsc] = useState(false);
-  const [territoryDesc, setTerritoryDesc] = useState(false);  
 
   // const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get("https://restcountries.eu/rest/v2/all")
-    .then(response => {
-      setCountries(response.data)
-      setCountriesToDisplay(response.data);
-    })
-    .catch(error => {
-      setError(true)
-    })
-  }, [])
+    if (!countries.length) {
+      const fetchCountries = async () => {
+        let result = await axios
+          .get("https://restcountries.eu/rest/v2/all")
+        result.data.forEach((elem) => {
+          if (!elem.borders.length) {
+            elem.borders[0] = "Inexistantes";
+          } else {
+            elem.borders.forEach((b, id) => {
+              let paysCorrespondant = result.data.filter(
+                (pays) => b === pays["alpha3Code"]
+              );
+              if (
+                paysCorrespondant.length &&
+                paysCorrespondant.length === 1
+              ) {
+                elem.borders[id] = paysCorrespondant[0].name;
+              }
+            });
+          }
+        });
+        setCountries(result.data);
+        setCountriesToDisplay(result.data);
+      }
+      fetchCountries()
+    }
+  }, [countries])
 
   function filterChange(e) {
     setCountriesToDisplay(countries.filter(elem => elem.name.toLowerCase().includes(e.target.value.toLowerCase())))
   }
 
   function filterContinentChange(continent) {
-    setCountriesToDisplay(countries.filter(elem => elem.region.toLowerCase().includes(continent.toLowerCase())))
+    console.log(continent)
+    if (continent.target) {
+      setCountriesToDisplay(
+        countries.filter((elem) =>
+          elem.region.toLowerCase().includes(continent.target.value.toLowerCase())
+        )
+      )
+    } else {
+      setCountriesToDisplay(countries.filter(elem => elem.region.toLowerCase().includes(continent.toLowerCase())))
+    }
   }
 
+  function filterSubContinentChange(sub) {
+    setCountriesToDisplay(countries.filter(elem => elem.subregion.toLowerCase().includes(sub.toLowerCase())))
+  }
   function changeRange(range) {
     setNbCountries(range.target.value)
   }
@@ -47,42 +71,54 @@ function App() {
     setWidthOfContainer(range.target.value)
   }
 
-  function changealphabeticalAsc(sorting) {
-    setAlphabeticalAsc(sorting)
-  }
-
-  function changealphabeticalDesc(sorting) {
-    setAlphabeticalDesc(sorting);
-  }
-
-  function changepopulationAsc(sorting) {
-    console.log(sorting.target.checked)
-    if (sorting.target.checked === true) {
-      setCountriesToDisplay([...countries.sort((a, b) => {
-        return a.population - b.population;
-      })])
-      setPopulationAsc(!sorting.target.checked);
-    } else {
-      setPopulationAsc(sorting.target.checked);
+  function changeSelect(elem) {
+    console.log(elem.target.value)
+    switch (elem.target.value) {
+      case "alphabeticalAsc":
+        console.log("Ici");
+        setCountriesToDisplay(
+          [...countries].sort((a, b) =>
+            a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+          )
+        );
+        break;
+      case "alphabeticalDesc":
+        setCountriesToDisplay(
+          [...countries].sort((a, b) =>
+            a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1
+          )
+        );
+        break;
+      case "populationAsc":
+        setCountriesToDisplay(
+          [...countries].sort((a, b) => a.population - b.population)
+        );
+        break;
+      case "populationDesc":
+        setCountriesToDisplay(
+          [...countries].sort((a, b) => b.population - a.population)
+        );
+        break;
+      case "territoryAsc":
+        setCountriesToDisplay(
+          [...countries].sort((a, b) => a.area - b.area)
+        );
+        break;
+      case "territoryDesc":
+        setCountriesToDisplay(
+          [...countries].sort((a, b) => b.area - a.area)
+        );
+        break;
+      default:
+        break;
     }
-
   }
 
-  function changepopulationDesc(sorting) {
-    setPopulationDesc(sorting);
-  }
-  
-  function changeterritoryAsc(sorting) {
-    setTerritoryAsc(sorting);
-  }
 
-  function changeterritoryDesc(sorting) {
-    setTerritoryDesc(sorting);
-  }
-
-  if (error) {
-    return <div>Erreur</div>;
-  } else if (countries === []) {
+  // if (error) {
+  //   return <div>Erreur</div>;
+  // } else 
+  if (countries === []) {
     return (
       <div className="App">
         <p>...Loading</p>
@@ -102,18 +138,10 @@ function App() {
             nbCountries={nbCountries}
             changeRangeWidth={changeRangeWidth}
             widthOfContainer={widthOfContainer}
-            changealphabeticalAsc={changealphabeticalAsc}
-            alphabeticalAsc={alphabeticalAsc}
-            changealphabeticalDesc={changealphabeticalDesc}
-            alphabeticalDesc={alphabeticalDesc}
-            changepopulationAsc={changepopulationAsc}
-            populationAsc={populationAsc}
-            changepopulationDesc={changepopulationDesc}
-            populationDesc={populationDesc}
-            changeterritoryAsc={changeterritoryAsc}
-            territoryAsc={territoryAsc}
-            changeterritoryDesc={changeterritoryDesc}
-            territoryDesc={territoryDesc}
+            changeSelect={changeSelect}
+            changeRegion={filterContinentChange}
+            changeSubRegion={filterSubContinentChange}
+            countries={countries}
           />
           <CountryList
             countries={countriesToDisplay}

@@ -5,16 +5,14 @@ import FormControl from "react-bootstrap/FormControl";
 import { useEffect, useState } from "react"
 
 export default function MyNavBar(props) {
-    const [continents, setContinents] = useState([])
+  const [continents, setContinents] = useState([]);
 
     useEffect(() => {
-        props.countries.forEach(elem => {
-            if (!continents.includes(elem.region)) {
-                console.log("Je passe dans le if");
-                setContinents([...continents, elem.region])
-            }
-        })
-        console.log(continents)
+        props.countries.forEach((elem) => {
+        if (!continents.includes(elem.region)) {
+            setContinents([...continents, elem.region]);
+        }
+        });
     })
 
     return (

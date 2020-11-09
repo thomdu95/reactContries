@@ -8,7 +8,7 @@ export default function Country(props) {
         <Card.Img variant="top" src={props.country.flag} />
         <Card.Body>
           <Card.Title>{props.country.name}</Card.Title>
-          <Card.Text>
+          <Card.Text as="div">
             <p>
               This country has{" "}
               <strong>
@@ -23,8 +23,17 @@ export default function Country(props) {
               peoples living there.
             </p>
             <p>
-              It's capital is <strong>{props.country.capital || "Unknown"}</strong> and it's
+              It's capital is{" "}
+              <strong>{props.country.capital || "Unknown"}</strong> and it's
               located in <strong>{props.country.region}</strong>
+            </p>
+            <p>
+              It's borders are{" "}
+              {props.country.borders.map((b, i) => (
+                <span key={`${b}${i}`}>
+                  <strong>{b}</strong>,{" "}
+                </span>
+              ))}
             </p>
           </Card.Text>
           <Button
